@@ -343,6 +343,30 @@ const shouldShowHistoryEntry = computed(() => {
   )
 })
 
+// add & execute a command
+const executeCommand = (commandString) => {
+  // Parse the command string
+  const parsedQuery = props.parser(commandString);
+  const program = head(defaultParser(commandString));
+  const getCommand = get(props.commands, program);
+
+  if (isFunction(getCommand)) {
+    // Execute the command logic
+    const command = getCommand(parsedQuery);
+
+    // Append the result to history
+    if (command) {
+      appendToHistory(markRaw(defineComponent({
+        name: 'InjectedCommand',
+        render: () => h(command)
+      })));
+    }
+  } else {
+    // Handle command not found
+    appendToHistory(createCommandNotFound(program));
+  }
+};
+
 // Removes and adds the dispatched query to enforce the queries first position
 const addDispatchedQuery = dispatchedQuery => {
   local.dispatchedQueries.delete(dispatchedQuery)
@@ -543,6 +567,7 @@ provide('appendToHistory', appendToHistory)
 provide('dispatch', dispatch)
 provide('decrementHistory', decrementHistory)
 provide('exit', exit)
+provide('executeCommand', executeCommand);
 provide('helpText', props.helpText)
 provide('helpTimeout', props.helpTimeout)
 provide('hidePrompt', props.hidePrompt)
@@ -566,6 +591,7 @@ defineExpose({
   decrementHistory,
   dispatch,
   exit,
+  executeCommand,
   incrementHistory,
   programs,
   sendSignal,

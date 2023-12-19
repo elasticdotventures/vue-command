@@ -382,7 +382,7 @@ contribute please consult `CONTRIBUTING.md`.
 ## Browser support
 
 This library uses the `ResizeObserver` to track if the terminal needs to scroll
-to the bottom. You may need a pollyfill to support your target browser.
+to the bottom. You may need a polyfill to support your target browser.
 
 ## Projects using vue-command
 
